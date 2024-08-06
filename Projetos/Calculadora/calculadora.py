@@ -1,7 +1,11 @@
-from AsimovAcademy.Projetos.Calculadora.funcoes.info_escolha import info_escolha
-from AsimovAcademy.Projetos.Calculadora.funcoes.menu import menu
-from AsimovAcademy.Projetos.Calculadora.funcoes.operação import operacao
+#from AsimovAcademy.Projetos.Calculadora.funcoes.info_escolha import info_escolha
+#from AsimovAcademy.Projetos.Calculadora.funcoes.menu import menu
+#from AsimovAcademy.Projetos.Calculadora.funcoes.operação import operacao
 import os
+
+from Projetos.Calculadora.funcoes.info_escolha import info_escolha
+from Projetos.Calculadora.funcoes.menu import menu
+from Projetos.Calculadora.funcoes.operação import operacao
 
 
 def calculadora():
