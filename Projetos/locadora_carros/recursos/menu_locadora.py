@@ -6,7 +6,7 @@ def display_menu_opcoes(opcoes):
 
     opcoes_menu = " | ".join(op_array)
 
-    print(opcoes_menu)
+    return opcoes_menu+" | 3 - Sair\n"
 
 def menu_locadora():
     print("Bem vindo à locadora de carros!")
@@ -18,6 +18,7 @@ def menu_locadora():
     try:
         escolha = int(input(display_menu_opcoes(opcoes)))
         return escolha
+
     except:
         #implementar o loop
         print("Escolha inválida... tente novamente")
