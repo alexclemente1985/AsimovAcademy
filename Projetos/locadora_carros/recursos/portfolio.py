@@ -4,7 +4,9 @@ from AsimovAcademy.Projetos.locadora_carros.recursos.menu_locadora import menu_l
 
 
 def display_veiculos(veiculo: Dict):
-    print(f"[{veiculo['index']}] {veiculo['nome']} - R$ {veiculo['diaria']} /dia")
+    print(f"[{veiculo['index']}] {veiculo['nome']} "
+          f"- R$ {veiculo['diaria']} /dia "
+          f"{' - Aluguel: '+str(veiculo['tempo'])+' dias' if int(veiculo['tempo']) > 0 else ''}")
 
 def portfolio(tipo: int, port: List[Dict]):
     match tipo:
@@ -13,7 +15,7 @@ def portfolio(tipo: int, port: List[Dict]):
         case 1:
             portfolio_disponivel(port)
         case 2:
-            portfolio_disponivel(port)
+            portfolio_devolucao(port)
 
 def portfolio_disponivel(port: List[Dict]):
     print("\n[ ALUGAR ] Dê uma olhada em nosso portfólio.\n")

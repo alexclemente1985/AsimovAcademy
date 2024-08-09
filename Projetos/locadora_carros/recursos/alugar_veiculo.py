@@ -13,18 +13,19 @@ def calculo_aluguel(veiculo: Dict, dias: int) -> bool:
 
 
 def alugar_veiculo(veiculos: List[Dict]):
-    print('teste alugar veiculos....', veiculos)
-    portfolio(1,veiculos)
+    portfolio(1, veiculos)
 
     try:
         print("========")
         prosseguir = False
         veiculo = dict()
 
+        veiculos_disp = [v for v in veiculos if bool(v['disponivel'])]
+
         while True:
             codigo = input("Escolha o código do carro:\n")
 
-            for c in veiculos:
+            for c in veiculos_disp:
                 if codigo == c['index']:
                     veiculo = c
                     prosseguir = True
@@ -34,6 +35,7 @@ def alugar_veiculo(veiculos: List[Dict]):
                 break
             else:
                 print("Código não encontrado... tente novamente.")
+                continue
 
         while True:
             try:
@@ -42,20 +44,20 @@ def alugar_veiculo(veiculos: List[Dict]):
 
                 if confirmado:
                     veiculo['disponivel'] = False
+                    veiculo['tempo'] = dias
 
                     for v in veiculos:
                         if v['index'] == veiculo['index']:
                             v['disponivel'] = False
+                            v['tempo'] = dias
 
                     print(f"Veículo {veiculo['nome']} alugado com sucesso! Duração do aluguel: {dias} dias.\n")
 
                 return veiculos
 
 
-            except Exception as e:
-                print("Valor inválido para período de aluguel... tente novamente.", e)
+            except:
+                print("Valor inválido para período de aluguel... tente novamente.")
 
     except Exception as e:
         print("Erro na inserção da informação do veículo a ser alugado ou no valor da qtd de dias de aluguel. ", e)
-
-    #return veiculos

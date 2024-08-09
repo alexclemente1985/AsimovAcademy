@@ -1,7 +1,4 @@
 #Etapas
-#1) Implementar processo devolução veículo
-#--> Alterar csv para registrar dias do aluguel
-#--> Implementar módulo de devolução
 
 #2) Implementar registro dos dados no csv ao encerrar o programa
 
@@ -18,6 +15,7 @@ import csv
 
 from AsimovAcademy.Projetos.locadora_carros.recursos.alugar_veiculo import alugar_veiculo
 from AsimovAcademy.Projetos.locadora_carros.recursos.database_dictionary import database_dictionary
+from AsimovAcademy.Projetos.locadora_carros.recursos.devolucao_veiculo import devolucao_veiculo
 from AsimovAcademy.Projetos.locadora_carros.recursos.menu_locadora import menu_locadora
 from AsimovAcademy.Projetos.locadora_carros.recursos.portfolio import portfolio
 
@@ -38,7 +36,7 @@ def locadora():
                 case 1:
                     dados = alugar_veiculo(dados)
                 case 2:
-                    continue
+                    dados = devolucao_veiculo(dados)
 
             continuar = input("Deseja algo mais (Digite 'S' para sim ou qualquer tecla para encerrar o programa)?\n")
 
