@@ -1,0 +1,6 @@
+1;Hyunday HB20;85;False;11
+2;Hyunday Tucson;120;False;23
+3;Fiat Uno;60;True;0
+4;Fiat Moby;70;True;0
+5;Fiat Pulse;130;False;5
+6;Honda Civic;150;False;87

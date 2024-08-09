@@ -19,14 +19,15 @@ def portfolio(tipo: int, port: List[Dict]):
 
 def portfolio_disponivel(port: List[Dict]):
     print("\n[ ALUGAR ] Dê uma olhada em nosso portfólio.\n")
+
     for v in port:
-        if v["disponivel"]:
+        if v["disponivel"] == "True":
             display_veiculos(v)
 
 def portfolio_devolucao(port: List[Dict]):
     print("\n[ DEVOLVER ] Veículos que deverão ser devolvidos.\n")
     for v in port:
-        if not v["disponivel"]:
+        if v["disponivel"] == "False":
             display_veiculos(v)
 
 

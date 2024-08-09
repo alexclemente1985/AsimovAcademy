@@ -4,9 +4,6 @@
 
 
 
-import csv
-
-# from Projetos.locadora_carros.recursos.database_dictionary import database_dictionary
 # from Projetos.locadora_carros.recursos.menu_locadora import menu_locadora
 
 import os
@@ -14,7 +11,8 @@ from pathlib import Path
 import csv
 
 from AsimovAcademy.Projetos.locadora_carros.recursos.alugar_veiculo import alugar_veiculo
-from AsimovAcademy.Projetos.locadora_carros.recursos.database_dictionary import database_dictionary
+from AsimovAcademy.Projetos.locadora_carros.recursos.db.escrita_arquivo import escrita_arquivo
+from AsimovAcademy.Projetos.locadora_carros.recursos.db.leitura_arquivo import leitura_arquivo
 from AsimovAcademy.Projetos.locadora_carros.recursos.devolucao_veiculo import devolucao_veiculo
 from AsimovAcademy.Projetos.locadora_carros.recursos.menu_locadora import menu_locadora
 from AsimovAcademy.Projetos.locadora_carros.recursos.portfolio import portfolio
@@ -22,10 +20,9 @@ from AsimovAcademy.Projetos.locadora_carros.recursos.portfolio import portfolio
 
 def locadora():
     try:
-        db_path = Path(__file__).parent / "recursos/db/carros.csv"
+        db_path = Path(__file__).parent / "recursos/db/carros.txt"
 
-        database = csv.reader(open(db_path))
-        dados = database_dictionary(database)
+        dados = leitura_arquivo(db_path)
 
         escolha = menu_locadora()
 
@@ -45,6 +42,7 @@ def locadora():
             else:
                 escolha = -1
         else:
+            escrita_arquivo(db_path, veiculos=dados)
             print("Finalizando o programa")
 
     except Exception as e:
