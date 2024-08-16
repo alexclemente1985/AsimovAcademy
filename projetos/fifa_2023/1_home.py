@@ -7,7 +7,8 @@ import streamlit as st
 
 # Carregamento dos dados
 if "data" not in st.session_state:
-    df_data = pd.read_csv(os.path.join(os.getcwd(), "datasets", "CLEAN_FIFA23_official_data.csv"), index_col=0)
+    #df_data = pd.read_csv(os.path.join(os.getcwd(), "datasets", "CLEAN_FIFA23_official_data.csv"), index_col=0)
+    df_data = pd.read_csv("datasets/CLEAN_FIFA23_official_data.csv", index_col=0)
 
     # Filtro para carregar jogadores que ainda estejam no contrato do clube
     df_data = df_data[df_data["Contract Valid Until"] >= datetime.today().year]
