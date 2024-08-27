@@ -1,0 +1,7 @@
+pandas
+names
+matplotlib
+openpyxl
+plotly
+streamlit
+ipykernel
