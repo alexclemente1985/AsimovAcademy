@@ -75,13 +75,13 @@ def analise_gasolina():
     # Tabela com variação percentual anual estado do RJ
     df_estado_rj = df_gas_comum[df_gas_comum['ESTADO'] == 'RIO DE JANEIRO']
     print(df_estado_rj.head())
-    df_rj_tabela = df_estado_rj[['ANO-MES','PREÇO MÉDIO REVENDA', 'DATA FINAL']]
+    df_rj_tabela = df_estado_rj[['ANO-MES', 'PREÇO MÉDIO REVENDA', 'DATA FINAL']]
     df_rj_tabela['ANO'] = df_rj_tabela['DATA FINAL'].apply(lambda x: x.year)
     df_rj_tabela['MES'] = df_rj_tabela['DATA FINAL'].apply(lambda x: x.month)
     print("Tabela de coeficientes de variação de preço no RJ: ")
     print(df_rj_tabela)
 
-    df_rj_tabela_groupby = df_rj_tabela.groupby('ANO')[['PREÇO MÉDIO REVENDA','MES']].last()
+    df_rj_tabela_groupby = df_rj_tabela.groupby('ANO')[['PREÇO MÉDIO REVENDA', 'MES']].last()
     print(df_rj_tabela_groupby)
 
     df_rj_tabela_var_anual = df_rj_tabela_groupby[df_rj_tabela_groupby['MES'] == 12]
@@ -90,6 +90,63 @@ def analise_gasolina():
     ###Pode-se melhorar a tabela, pois o processo abaixo está fazendo o mesmo com a coluna MES (o que não tem sentido)
     df_rj_variacoes = (df_rj_tabela_var_anual / df_rj_tabela_var_anual.shift(1) - 1) * 100
     print(df_rj_variacoes[['PREÇO MÉDIO REVENDA']])
+
+    # Série temporal
+    print(df_gas_comum)
+    # Criação série temporal
+    df_gas_max_min = df_gas_comum[
+        ['ANO-MES', 'PREÇO MÉDIO REVENDA', 'PREÇO MÁXIMO REVENDA', 'PREÇO MÍNIMO REVENDA', 'ESTADO']]
+    print(df_gas_max_min.head())
+    df_gas_max_min_gpby = df_gas_max_min.groupby('ANO-MES')
+    print(df_gas_max_min_gpby.head())
+
+    print('--------')
+    # Criação das colunas de máximos e mínimos para cada período, e colunas para os respectivos índices
+
+    df_max = df_gas_max_min_gpby.max()['PREÇO MÁXIMO REVENDA']
+    df_min = df_gas_max_min_gpby.min()['PREÇO MÍNIMO REVENDA']
+    idx_max = df_gas_max_min_gpby['PREÇO MÁXIMO REVENDA'].idxmax()
+    idx_min = df_gas_max_min_gpby['PREÇO MÍNIMO REVENDA'].idxmin()
+
+    # Criação do DataFrame que irá comportar todos os dados necessários
+    df_diff = pd.DataFrame()
+
+    # Criação das colunas de variações abs e perc, e com valores de máx e min
+
+    df_diff['ABS_DIFF'] = df_max - df_min
+    df_diff['PERC_DIFF'] = (df_max - df_min) / df_min * 100
+    df_diff['MAX'] = df_max
+    df_diff['MIN'] = df_min
+    print(df_diff)
+
+    # Verificação na tabela original quanto à localização de dados de estado com valor máximo,
+    ## verificando todas as colunas (:) nos registros de índices de máximo (idx_max)
+    print(df_gas_max_min.loc[idx_max, :][['ESTADO', "PREÇO MÁXIMO REVENDA", "ANO-MES"]])
+
+    df_diff['ESTADO_MAX'] = df_gas_max_min.loc[idx_max, :]['ESTADO'].values
+    df_diff['ESTADO_MIN'] = df_gas_max_min.loc[idx_min, :]['ESTADO'].values
+    print(df_diff)
+
+    # Verificando qual estado aparece mais vezes como o mais caro em termos de gasolina (com valores extremos)
+    print(df_diff["ESTADO_MAX"].value_counts())
+
+    # Refazendo com os valores médios de revenda
+
+    df_diff_medio = pd.DataFrame()
+    df_medio_max = df_gas_max_min_gpby['PREÇO MÉDIO REVENDA'].max()
+    df_medio_min = df_gas_max_min_gpby['PREÇO MÉDIO REVENDA'].min()
+    idx_medio_max = df_gas_max_min_gpby['PREÇO MÉDIO REVENDA'].idxmax()
+    idx_medio_min = df_gas_max_min_gpby['PREÇO MÉDIO REVENDA'].idxmin()
+
+    df_diff_medio["ABS_DIFF"] = df_medio_max - df_medio_min
+    df_diff_medio["PERC_DIFF"] = (df_medio_max - df_medio_min)/df_medio_min * 100
+    df_diff_medio["PMR_MIN"] = df_gas_max_min.loc[idx_medio_min, :]['PREÇO MÉDIO REVENDA'].values
+    df_diff_medio["PMR_MAX"] = df_gas_max_min.loc[idx_medio_max, :]['PREÇO MÉDIO REVENDA'].values
+    df_diff_medio["ESTADO_MIN"] = df_gas_max_min.loc[idx_medio_min, :]['ESTADO'].values
+    df_diff_medio["ESTADO_MAX"] = df_gas_max_min.loc[idx_medio_max, :]['ESTADO'].values
+    print(df_diff_medio)
+    print(df_diff_medio['ESTADO_MAX'].value_counts())
+    print(df_diff_medio['ESTADO_MIN'].value_counts())
 
 
 analise_gasolina()
