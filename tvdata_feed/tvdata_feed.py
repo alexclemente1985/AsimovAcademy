@@ -1,7 +1,9 @@
 from datetime import datetime, timedelta
 import pandas as pd
+from tvDatafeed import TvDatafeed, Interval
 
 def tvdata_feed():
-    pass
+    username = 'alexclemente1985'
+    password = ''
 
 tvdata_feed()
