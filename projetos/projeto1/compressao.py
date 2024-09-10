@@ -10,7 +10,7 @@ def compressao():
     if compressed_path not in os.listdir():
         os.mkdir(compressed_path)
 
-    files_path = 'fotos'
+    files_path = '../fotos'
 
     # lista arquivos de imagem jpg apenas
     files = [i for i in os.listdir(files_path) if 'jpg' in i]
