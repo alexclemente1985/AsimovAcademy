@@ -3,3 +3,4 @@ datetime
 tvdatafeed
 yfinance
 matplotlib
+pyarrow
