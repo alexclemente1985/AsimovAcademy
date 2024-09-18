@@ -2,3 +2,4 @@ plotly
 ipywidgets
 numpy
 pandas
+statsmodels
