@@ -22,6 +22,9 @@ def tvdata_feed():
         tv.search_symbol('PETR4','BMFBOVESPA')
         petros = tv.get_hist(symbol='PETR4',exchange='BMFBOVESPA')
         print('teste petros (PETR4): \n',petros)
+        df_petros = pd.DataFrame(petros)
+        df_petros.to_csv(Path.joinpath(Path.cwd(),'exports','tvfeed_petr4.csv'))
+
         # if tv.token == 'unauthorized_user_token':
         #   tv = TvDatafeed(auto_login=False)
     except Exception as e:

@@ -4,3 +4,4 @@ tvdatafeed
 yfinance
 matplotlib
 pyarrow
+MetaTrader5
