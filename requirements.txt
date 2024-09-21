@@ -5,3 +5,4 @@ yfinance
 matplotlib
 pyarrow
 MetaTrader5
+plotly
