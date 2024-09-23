@@ -6,36 +6,39 @@ from pathlib import Path
 import MetaTrader5 as mt5
 import pandas as pd
 
-ohlc = Path.joinpath(Path.cwd().parent, 'ohlc')
-ticks_dir = Path.joinpath(Path.cwd().parent, 'ticks')
+ohlc_dir = Path.joinpath(Path.cwd(), 'ohlc')
+ticks_dir = Path.joinpath(Path.cwd(), 'ticks')
+
+
 class AsimoTrader():
 
-    def __init__(self,metatrader_app_login=None, filepath=None, Login=None, password=None, server=None):
+    def __init__(self, metatrader_app_login=None, filepath=None, Login=None, password=None, server=None):
         if metatrader_app_login:
             if not mt5.initialize():
                 print('Initialize() failed')
                 mt5.shutdown()
-        elif filepath:
-            try:
-                with open(filepath) as f:
-                    credentials = json.load(f)
+        else:
+            if filepath:
+                try:
+                    with open(filepath) as f:
+                        credentials = json.load(f)
 
-                self.login = credentials['loginJson']
-                self.password = credentials['passwordJson']
-                self.server = credentials['serverJson']
-            except:
-                print("Erro ao ler as credenciais")
-                quit()
-        elif Login or password or server:
-            self.login = Login
-            self.password = password
-            self.server = server
+                    self.login = credentials['loginJson']
+                    self.password = credentials['passwordJson']
+                    self.server = credentials['serverJson']
+                except:
+                    print("Erro ao ler as credenciais")
+                    quit()
+            elif Login or password or server:
+                self.login = Login
+                self.password = password
+                self.server = server
 
-            '''if(Login and password and server) == None:
-                print("Erro ao ler as credenciais")
-                quit()'''
+                '''if(Login and password and server) == None:
+                    print("Erro ao ler as credenciais")
+                    quit()'''
 
-            #Caso o mt5 não inicialize, quit()
+            # Caso o mt5 não inicialize, quit()
             if not mt5.initialize(Login=self.login, password=self.password, server=self.server):
                 print("initialize() failed, error code = ", mt5.last_error())
                 mt5.shutdown()
@@ -68,15 +71,13 @@ class AsimoTrader():
             'TIMEFRAME_MN1': [mt5.TIMEFRAME_MN1, 2592000],
         }
 
-
-
-        if not ohlc.exists():
-            Path.mkdir(ohlc)
+        if not ohlc_dir.exists():
+            Path.mkdir(ohlc_dir)
             for timeframe in self.timeframe_dict.keys():
                 try:
-                   Path.mkdir(Path.joinpath(ohlc, timeframe))
+                    Path.mkdir(Path.joinpath(ohlc_dir, timeframe))
                 except FileExistsError:
-                   pass
+                    pass
         elif not ticks_dir.exists():
             Path.mkdir(ticks_dir)
 
@@ -84,17 +85,17 @@ class AsimoTrader():
         initial_date = datetime(2012, 1, 1)
         final_date = datetime.now()
 
-        if not Path.joinpath(ohlc, timeframe, f'{symbol}_{timeframe}.csv'):
+        if not Path.joinpath(ohlc_dir, timeframe, f'{symbol}_{timeframe}.csv').exists():
             df = pd.DataFrame(columns=['time', 'open', 'high', 'low', 'close', 'tick_volume', 'spread', 'real_volume'])
         else:
-            df = pd.read_csv(Path.joinpath(ohlc, timeframe, f'{symbol}_{timeframe}.csv'))
+            df = pd.read_csv(Path.joinpath(ohlc_dir, timeframe, f'{symbol}_{timeframe}.csv'))
             df['time'] = pd.to_datetime(df['time'])
             if df['time'].max() < datetime.now() - timedelta(days=7):
                 initial_date = df['time'].max()
             else:
                 return
 
-        timedelta_default = timedelta(days=self.timeframe_dict['timeframe'][1])
+        timedelta_default = timedelta(days=self.timeframe_dict[timeframe][1])
         final_date_aux = initial_date + timedelta_default
         timeframe_name = timeframe
         timeframe = self.timeframe_dict[timeframe][0]
@@ -102,7 +103,7 @@ class AsimoTrader():
         while True:
             data_aux = mt5.copy_rates_range(symbol, timeframe, initial_date, min(final_date_aux, final_date))
             df_aux = pd.DataFrame(data_aux)
-            df_aux['time'] = pd.to_datetime(df_aux['time'], unit='s')
+            df_aux['time'] = pd.to_datetime(df_aux['time'])#, unit='s'
             df = pd.concat([df_aux, df], ignore_index=True)
 
             if final_date_aux > final_date:
@@ -113,9 +114,8 @@ class AsimoTrader():
 
         # Save df to file
         df.sort_values(by='time', ascending=False, inplace=True)
-        #index=False evita que a cada vez que atualize seja gerada uma coluna unnamed_x que seria o índice para aquele update
-        df.to_csv(Path.joinpath(ohlc, timeframe_name, f'{symbol}_{timeframe_name}.csv'),index=False)
-
+        # index=False evita que a cada vez que atualize seja gerada uma coluna unnamed_x que seria o índice para aquele update
+        df.to_csv(Path.joinpath(ohlc_dir, timeframe_name, f'{symbol}_{timeframe_name}.csv'), index=False)
 
     # Calculando apenas negocios efetivados, não todos.
     def update_ticks(self, symbol):
@@ -138,8 +138,31 @@ class AsimoTrader():
 
         # Save df to file
         df.sort_values(by='time', ascending=False, inplace=True)
-        df.to_csv(f'ticks\\{symbol}_ticksrange.csv', index=False)
+        # df.to_csv(f'ticks\\{symbol}_ticksrange.csv', index=False)
         df.to_csv(Path.joinpath(ticks_dir, f'{symbol}_ticksrange.csv'), index=False)
 
+    def slice(self, type, symbol, initial_date, final_date, timeframe=None):
+        path = Path
 
-                       
+        match type:
+            case 'ohlc':
+                path = Path.joinpath(ohlc_dir, timeframe, f'{symbol}_{timeframe}.csv')
+            case 'ticks':
+                path = Path.joinpath(ticks_dir, timeframe, f'{symbol}_ticksrange.csv')
+
+        '''path = Path.joinpath(ohlc_dir, timeframe, f'{symbol}_{timeframe}.csv') if type == 'ohlc' else Path.joinpath(
+            ticks_dir, timeframe, f'{symbol}_ticksrange.csv')'''
+
+        if not path.exists():
+            print(f"O ativo {symbol} não está registrado. Favor criá-lo usando a função .update_{type}")
+        else:
+            df = pd.read_csv(path)
+            df["time"] = pd.to_datetime(df["time"])
+            return df.loc[(df["time"] >= initial_date) & (df["time"] < final_date)]
+        pass
+
+    def read_ohlc(self, symbol, timeframe, initial_date=datetime(2012, 1, 1), final_date=datetime.now()):
+        return self.slice('ohlc', symbol, initial_date, final_date, timeframe=timeframe)
+
+    def read_ticks(self, symbol, initial_date=datetime(2012, 1, 1), final_date=datetime.now()):
+        return self.slice('ohlc', symbol, initial_date, final_date)
