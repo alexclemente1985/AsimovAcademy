@@ -86,6 +86,9 @@ def analise_obesidade():
     print(df_obesidade.info())
     # Conversão dos valores em float e verificação do resultado
     df_obesidade['Obesity'] = df_obesidade['Obesity'].apply(lambda x: float(x))
+    df_obesidade['Year'] = df_obesidade["Year"].apply(lambda x: int(x))
+    ##Criação do index com Year
+    df_obesidade.set_index("Year", inplace=True)
     print("Situação do dataframe de estudo após conversão dos valores de obesidade para float: ")
     print(df_obesidade.info())
     print(df_obesidade.head())
@@ -95,6 +98,18 @@ def analise_obesidade():
     ### df_obesidade.dropna()
 
     # SEGUNDA QUESTÃO-> PERCENTUAL MÉDIO DE OBESIDADE POR SEXO NO MUNDO EM 2015
+    df_ob_2015 = df_obesidade[df_obesidade.index == 2015]
+
+    df_ob_2015_sex = df_ob_2015[["Sex", "Obesity"]]
+
+    df_ob_2015_sex_mean = df_ob_2015_sex.groupby("Sex").mean()
+    df_ob_2015_sex_mean["Obesity"] = df_ob_2015_sex_mean["Obesity"].apply(lambda x: f'{round(x,2)}%')
+    df_ob_2015_sex_mean.rename(columns={"Obesity": "Average Obesity in 2015"}, inplace=True)
+    print(df_ob_2015_sex_mean)
+
+    # TERCEIRA QUESTÃO -> 5 PAÍSES COM MAIOR E MENOR TAXA DE AUMENTO DOS ÍNDICES DE OBESIDADE NO PERÍODO
+    df_ob_2015_country = df_ob_2015[["Country", "Obesity"]]
+    df_ob_2015_country_group = df_ob_2015_country.groupby
 
 
 analise_obesidade()
