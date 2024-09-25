@@ -90,6 +90,16 @@ def manipulacao_arquivos():
     print(Path(__file__).parent.is_file())
     print(Path(__file__).parent.is_dir())
 
+    ## Módulo 2 Copiando e movendo arquivos
+
+    ### Copiando arquivo com copyfile
+    pasta_atual = Path(__file__).parent
+    caminho_arq2 = pasta_atual / 'texto.txt'
+    ### Copiando arquivo com copy
+    ### Copiando arquivo com copy2
+    ### Movendo arquivos
+    ### Deletando arquivos
+
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':

@@ -1,0 +1,1 @@
+"{\n  \"assinantes\": [\n    {\n      \"nome\": \"Adriano Soares\",\n      \"telefone\": \"51 99999999\",\n      \"email\": \"adriano@email.com\",\n      \"em_dia\": true\n    },\n    {\n      \"nome\": \"Juliano faccioni\",\n      \"telefone\": \"51 99999999\",\n      \"email\": \"juliano@email.com\",\n      \"em_dia\": false\n    }\n  ],\n  \"data_extração\": \"2023/08/22\"\n}"
