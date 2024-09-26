@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 import numpy as np
+import plotly.graph_objects as go
 
 
 def analise_obesidade():
@@ -103,13 +104,39 @@ def analise_obesidade():
     df_ob_2015_sex = df_ob_2015[["Sex", "Obesity"]]
 
     df_ob_2015_sex_mean = df_ob_2015_sex.groupby("Sex").mean()
-    df_ob_2015_sex_mean["Obesity"] = df_ob_2015_sex_mean["Obesity"].apply(lambda x: f'{round(x,2)}%')
+    df_ob_2015_sex_mean["Obesity"] = df_ob_2015_sex_mean["Obesity"].apply(lambda x: f'{round(x, 2)}%')
     df_ob_2015_sex_mean.rename(columns={"Obesity": "Average Obesity in 2015"}, inplace=True)
     print(df_ob_2015_sex_mean)
 
-    # TERCEIRA QUESTÃO -> 5 PAÍSES COM MAIOR E MENOR TAXA DE AUMENTO DOS ÍNDICES DE OBESIDADE NO PERÍODO
-    df_ob_2015_country = df_ob_2015[["Country", "Obesity"]]
-    df_ob_2015_country_group = df_ob_2015_country.groupby
+    # TERCEIRA QUESTÃO -> 5 PAÍSES COM MAIOR E MENOR TAXA DE AUMENTO DOS ÍNDICES DE OBESIDADE NO PERÍODO TOTAL
+
+    min_year = df_obesidade.index.min()
+    max_year = df_obesidade.index.max()
+    print('TERCEIRA QUESTÃO')
+    print(min_year, max_year)
+
+    #Verificação da existência de nulos no período
+    df_ob_both = df_obesidade[df_obesidade["Sex"] == "Both sexes"]
+    print(df_ob_both.isnull().values.any())
+    print(df_ob_both.isna().values.any())
+
+    print(df_ob_both)
+    df_ob_var_end = df_ob_both[df_ob_both.index == max_year]
+    df_ob_var_start = df_ob_both[df_ob_both.index == min_year]
+
+    df_var = pd.DataFrame()
+
+
+
+    # QUARTA QUESTÃO -> PAÍSES COM MAIORES E MENORES NÍVEIS PERCENTUAIS DE OBESIDADE EM 2015
+
+    '''df_ob_2015_country_group = df_ob_2015_country.groupby('Country')
+    df_ob_2015_country_min_ob = df_ob_2015_country_group.min().sort_values(by="Obesity")
+    df_ob_2015_country_max_ob = df_ob_2015_country_group.max().sort_values(by="Obesity", ascending=False)
+    print("\n5 países com menor taxa de aumento: ")
+    print(df_ob_2015_country_min_ob.head(5))
+    print("\n5 países com maior taxa de aumento: ")
+    print(df_ob_2015_country_max_ob.head(5))'''
 
 
 analise_obesidade()
