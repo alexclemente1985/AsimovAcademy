@@ -2,7 +2,6 @@ from pathlib import Path
 
 import pandas as pd
 import numpy as np
-import plotly.graph_objects as go
 
 
 def analise_obesidade():
@@ -115,7 +114,7 @@ def analise_obesidade():
     print('TERCEIRA QUESTÃO')
     print(min_year, max_year)
 
-    #Verificação da existência de nulos no período
+    # Verificação da existência de nulos no período
     df_ob_both = df_obesidade[df_obesidade["Sex"] == "Both sexes"]
     print(df_ob_both.isnull().values.any())
     print(df_ob_both.isna().values.any())
@@ -124,19 +123,67 @@ def analise_obesidade():
     df_ob_var_end = df_ob_both[df_ob_both.index == max_year]
     df_ob_var_start = df_ob_both[df_ob_both.index == min_year]
 
-    df_var = pd.DataFrame()
+    print(df_ob_var_start)
+    print(df_ob_var_end)
 
+    df_var = pd.merge(
+        df_ob_var_start[df_ob_var_start.columns.difference(['Sex'])],
+        df_ob_var_end[df_ob_var_end.columns.difference(['Sex'])],
+        how="inner",
+        on=['Country'],
+        suffixes=(f" {min_year}", f" {max_year}"))
 
+    df_var.set_index(['Country'], inplace=True)
+    print(df_var)
+    df_var["Abs Ob Var"] = df_var["Obesity 2016"] - df_var["Obesity 1975"]
+    df_var["Ob Variation (%)"] = round(((df_var["Obesity 2016"] / df_var["Obesity 1975"]) - 1) * 100, 2)
+
+    print(df_var[['Abs Ob Var', 'Ob Variation (%)']].sort_values(ascending=False, by='Abs Ob Var').head(5))
+    print(df_var[['Abs Ob Var', 'Ob Variation (%)']].sort_values(by='Abs Ob Var').head(5))
 
     # QUARTA QUESTÃO -> PAÍSES COM MAIORES E MENORES NÍVEIS PERCENTUAIS DE OBESIDADE EM 2015
 
-    '''df_ob_2015_country_group = df_ob_2015_country.groupby('Country')
-    df_ob_2015_country_min_ob = df_ob_2015_country_group.min().sort_values(by="Obesity")
-    df_ob_2015_country_max_ob = df_ob_2015_country_group.max().sort_values(by="Obesity", ascending=False)
-    print("\n5 países com menor taxa de aumento: ")
-    print(df_ob_2015_country_min_ob.head(5))
-    print("\n5 países com maior taxa de aumento: ")
-    print(df_ob_2015_country_max_ob.head(5))'''
+    print('\nQUARTA QUESTÃO')
+    # Considerando apenas 'Both sexes'
+    df_ob_2015 = (df_obesidade[
+                      (df_obesidade.index == 2015) & (df_obesidade['Sex'] == 'Both sexes')
+                      ][df_obesidade.columns.difference(['Sex'])]
+                  .copy()
+                  .set_index("Country")
+                  .sort_values(by="Obesity"))
+
+    print(df_ob_2015.head(1))
+    print(df_ob_2015.tail(1))
+
+    # Considerando 'Male' e 'Female'
+    df_ob_2015 = df_obesidade[(df_obesidade.index == 2015) & (df_obesidade['Sex'] != 'Both sexes')
+                              ].copy().set_index("Country").sort_values(by="Obesity")
+
+    print(df_ob_2015.head(1))
+    print(df_ob_2015.tail(1))
+
+    print("\nSolução do professor ----------------")
+    df_2015 = df_obesidade[df_obesidade.index == 2015].copy()
+    print('\n Máximos')
+    print(df_2015[df_2015["Obesity"] == df_2015["Obesity"].max()])
+    print('\n Mínimos')
+    print(df_2015[df_2015["Obesity"] == df_2015["Obesity"].min()])
+
+    # QUINTA QUESTÃO: DIFERENÇA MÉDIA PERCENTUAL OB AO LONGO DOS ANOS ENTRE SEXOS BRASIL
+    print('\nQUINTA QUESTÃO')
+    df_ob_brazil = df_obesidade[(df_obesidade['Country'] == 'Brazil') & (df_obesidade['Sex'] != 'Both sexes')].copy()
+
+    ''' df_ob_brazil_start_male = df_ob_brazil[(df_ob_brazil.index == min_year) & (df_ob_brazil['Sex'] == 'Male')]
+    df_ob_brazil_start_female = df_ob_brazil[(df_ob_brazil.index == min_year) & (df_ob_brazil['Sex'] == 'Female')]
+    df_ob_brazil_end_male = df_ob_brazil[(df_ob_brazil.index == max_year) & (df_ob_brazil['Sex'] == 'Male')]
+    df_ob_brazil_end_female = df_ob_brazil[(df_ob_brazil.index == max_year) & (df_ob_brazil['Sex'] == 'Female')]
+
+    print(df_ob_brazil_start_male)
+    print(df_ob_brazil_end_male)
+    print(df_ob_brazil_start_female)
+    print(df_ob_brazil_end_female)'''
+
+
 
 
 analise_obesidade()
