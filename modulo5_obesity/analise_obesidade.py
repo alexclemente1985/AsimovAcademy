@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 import numpy as np
+import plotly.graph_objects as go
 
 
 def analise_obesidade():
@@ -172,18 +173,66 @@ def analise_obesidade():
     # QUINTA QUESTÃO: DIFERENÇA MÉDIA PERCENTUAL OB AO LONGO DOS ANOS ENTRE SEXOS BRASIL
     print('\nQUINTA QUESTÃO')
     df_ob_brazil = df_obesidade[(df_obesidade['Country'] == 'Brazil') & (df_obesidade['Sex'] != 'Both sexes')].copy()
+    df_ob_brazil_diff = pd.DataFrame()
+    df_ob_brazil_diff['Brazil Obesity Genre Difference (%)'] = df_ob_brazil[df_ob_brazil['Sex'] == 'Male'][
+                                                                   ['Obesity']] - \
+                                                               df_ob_brazil[df_ob_brazil['Sex'] == 'Female'][
+                                                                   ['Obesity']]
+    df_ob_brazil_diff['Brazil Obesity Genre Difference (%)'] = df_ob_brazil_diff[
+        'Brazil Obesity Genre Difference (%)'].apply(lambda x: abs(x))
 
-    ''' df_ob_brazil_start_male = df_ob_brazil[(df_ob_brazil.index == min_year) & (df_ob_brazil['Sex'] == 'Male')]
-    df_ob_brazil_start_female = df_ob_brazil[(df_ob_brazil.index == min_year) & (df_ob_brazil['Sex'] == 'Female')]
-    df_ob_brazil_end_male = df_ob_brazil[(df_ob_brazil.index == max_year) & (df_ob_brazil['Sex'] == 'Male')]
-    df_ob_brazil_end_female = df_ob_brazil[(df_ob_brazil.index == max_year) & (df_ob_brazil['Sex'] == 'Female')]
+    print(df_ob_brazil_diff)
 
-    print(df_ob_brazil_start_male)
-    print(df_ob_brazil_end_male)
-    print(df_ob_brazil_start_female)
-    print(df_ob_brazil_end_female)'''
+    print("\nDiferença média percentual de obesidade entre sexos ao longo dos anos no Brasil:")
+    print(f"{round(df_ob_brazil_diff['Brazil Obesity Genre Difference (%)'].mean(), 2)}%")
 
+    fig = go.Figure(data=go.Scatter(
+        x=df_ob_brazil_diff.index,
+        y=df_ob_brazil_diff['Brazil Obesity Genre Difference (%)'],
+        mode="lines+markers",
+        hovertemplate="Diferença entre Obesidades: %{y}% | Ano: %{x}",
+        name="Diferença Percentual entre Gêneros",
+        marker=dict({'color': 'purple'})
+    ))
 
+    fig.update_layout(title_text='Diferença Percentual de Obesidades entre Gêneros no Brasil',
+                      yaxis_title="Diferenças Percentuais entre Gêneros (%)", xaxis_title="Anos")
+
+    fig.add_trace(go.Scatter(x=df_ob_brazil.query("Sex=='Male'").index,
+                             y=df_ob_brazil.query("Sex=='Male'")['Obesity'],
+                             mode="lines+markers",
+                             hovertemplate="Obesidade: %{y}% | Ano: %{x}",
+                             name="Percentual Anual de Obesidade: Homens",
+                             marker=dict({'color': 'orange'})
+                             ))
+
+    fig.add_trace(go.Scatter(x=df_ob_brazil[df_ob_brazil['Sex'] == 'Female'].index,
+                             y=df_ob_brazil[df_ob_brazil['Sex'] == 'Female']['Obesity'],
+                             mode="lines+markers",
+                             hovertemplate="Obesidade: %{y}% | Ano: %{x}",
+                             name="Percentual Anual de Obesidade: Mulheres",
+                             marker=dict({'color': 'pink'})
+                             ))
+
+    fig.show()
+    print(df_ob_brazil[df_ob_brazil['Sex'] == 'Male']['Obesity'])
+
+    # SEXTA QUESTÃO: GRÁFICO DE EVOLUÇÃO DA OBESIDADE DE AMBOS OS SEXOS NO MUNDO
+    df_ob_both = df_obesidade[df_obesidade['Sex'] == 'Both sexes'][df_ob_both.columns.difference(['Sex'])]
+
+    print(df_ob_both)
+    df_ob_both.reset_index(inplace=True)
+    print(df_ob_both)
+    #Criar groupby apenas com Year e fazer mean() com Obesity
+    df_ob_both_mean = df_ob_both.groupby('Year')['Obesity'].mean()
+    df_ob_both_mean.rename("Média", inplace=True)
+
+    print(df_ob_both_mean)
+
+    fig2 = go.Figure(data=go.Scatter(x=df_ob_both_mean.index, y=df_ob_both_mean))
+    fig2.update_layout(title_text='Médias de Obesidades no Mundo',
+                      yaxis_title="Obesidade Média (%)", xaxis_title="Anos")
+    fig2.show()
 
 
 analise_obesidade()
