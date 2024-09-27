@@ -5,3 +5,4 @@ xlrd
 openpyxl
 lxml
 html5lib
+plotly
