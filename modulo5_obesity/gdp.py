@@ -45,9 +45,30 @@ def gdp():
 
     # TERCEIRA QUESTÃO: Regiões com maiores crescimentos de PIB per capita do século passado
     ## Nota: Século inicia em um ano com final 01 e termina em um ano com final 00 -> Ex: Século XX - início em 1901 | término em 2000
-    df_gdp_year_idx = df_gdp.set_index(["Year"])
-    df_gdp_region = df_gdp_year_idx[(df_gdp_year_idx.index > 1901) & (df_gdp_year_idx.index < 2000)].set_index(['Region'])
-    print(df_gdp_region.sort_values(by="GDP", ascending=False).head(5))
+    df_gdp_idx_year = df_gdp.sort_values(by="Year").set_index(["Year"])[["Region", "GDP"]]
+    df_gdp_20_century = df_gdp_idx_year[(df_gdp_idx_year.index >= 1901) & (df_gdp_idx_year.index <= 2000)]
+
+    initial_year = df_gdp_20_century.index.min()
+    final_year = df_gdp_20_century.index.max()
+
+    df_gdp_20_cent_start = df_gdp_20_century[df_gdp_20_century.index == initial_year].groupby("Region").mean()
+    df_gdp_20_cent_final = df_gdp_20_century[df_gdp_20_century.index == final_year].groupby("Region").mean()
+
+    print(df_gdp_20_cent_start)
+    print(df_gdp_20_cent_final)
+
+    df_gdp_20_cent_mean_var = pd.merge(df_gdp_20_cent_start, df_gdp_20_cent_final, on=["Region"],
+                                       suffixes=(f"_Mean {initial_year}", f"_Mean {final_year}"))
+
+
+    df_gdp_20_cent_mean_var['Variation (%)'] = ((df_gdp_20_cent_mean_var['GDP_Mean 1996'] / df_gdp_20_cent_mean_var[
+        'GDP_Mean 1901']) - 1) * 100
+    print(df_gdp_20_cent_mean_var.sort_values(by='Variation (%)', ascending=False))
+
+    #Resposta do professor adaptada ao que já tinha sido feito aqui
+    df_gdp_20_cent_var = (((df_gdp_20_cent_final / df_gdp_20_cent_start) - 1) * 100).sort_values(by="GDP",
+                                                                                                 ascending=False)
+    print(df_gdp_20_cent_var)
 
 
 gdp()
