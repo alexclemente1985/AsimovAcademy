@@ -70,5 +70,9 @@ def gdp():
                                                                                                  ascending=False)
     print(df_gdp_20_cent_var)
 
+    #QUARTA QUESTÃO: Preencha dados ausentes de cada país com estimativas baseadas na diferença entre registros anteriores e posteriores do país
+
+    print(df_gdp)
+
 
 gdp()
