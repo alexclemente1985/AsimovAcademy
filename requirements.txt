@@ -6,3 +6,4 @@ openpyxl
 lxml
 html5lib
 plotly
+matplotlib
