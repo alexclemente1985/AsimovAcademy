@@ -1,0 +1,4 @@
+nome;valor;perde;ganha
+pedra;0;1;2
+papel;1;2;0
+tesoura;2;0;1

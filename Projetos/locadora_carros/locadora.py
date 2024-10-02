@@ -10,12 +10,19 @@ import os
 from pathlib import Path
 import csv
 
-from AsimovAcademy.Projetos.locadora_carros.recursos.alugar_veiculo import alugar_veiculo
+from Projetos.locadora_carros.recursos.alugar_veiculo import alugar_veiculo
+from Projetos.locadora_carros.recursos.db.escrita_arquivo import escrita_arquivo
+from Projetos.locadora_carros.recursos.db.leitura_arquivo import leitura_arquivo
+from Projetos.locadora_carros.recursos.devolucao_veiculo import devolucao_veiculo
+from Projetos.locadora_carros.recursos.menu_locadora import menu_locadora
+from Projetos.locadora_carros.recursos.portfolio import portfolio
+
+'''from AsimovAcademy.Projetos.locadora_carros.recursos.alugar_veiculo import alugar_veiculo
 from AsimovAcademy.Projetos.locadora_carros.recursos.db.escrita_arquivo import escrita_arquivo
 from AsimovAcademy.Projetos.locadora_carros.recursos.db.leitura_arquivo import leitura_arquivo
 from AsimovAcademy.Projetos.locadora_carros.recursos.devolucao_veiculo import devolucao_veiculo
 from AsimovAcademy.Projetos.locadora_carros.recursos.menu_locadora import menu_locadora
-from AsimovAcademy.Projetos.locadora_carros.recursos.portfolio import portfolio
+from AsimovAcademy.Projetos.locadora_carros.recursos.portfolio import portfolio'''
 
 
 def locadora():
