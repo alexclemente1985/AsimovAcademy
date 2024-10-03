@@ -1,9 +1,3 @@
-from pathlib import Path
-
-from classes.circle import Circle
-
-classes_path = Path.joinpath(Path.cwd(),"classes")
-
 from classes.dog import Dog
 
 
@@ -16,13 +10,15 @@ def orientacao_obj():
     exemplo = Exemplo()
     print(type(exemplo))
 
-    dog = Dog("Dálmata")
-    print(type(dog))
+    dog = Dog(nome="Rasputin", raca="Dalmata")
     dog.envelhecer()
     print(dog.idade)
     print(dog.raca)
 
-    circle = Circle()
+    dog.correr()
+    print(dog)
+
+
 
 
 
