@@ -6,7 +6,12 @@ import seaborn as sns
 import numpy as np
 from pathlib import Path
 
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.tree import DecisionTreeRegressor
 
 
 # import ssl
@@ -79,6 +84,94 @@ def an_exp_dados():
     df = df.join(one_hot)
 
     print(df.head())
+
+    #Treinamento do modelo
+    ##Segmentação dos dados para treino e para teste
+    Y = df['Price']
+    ###Todos os registros exceto o de preço
+    X = df.loc[:, df.columns != 'Price']
+
+    x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.3)
+
+    print("Valores de treino")
+    print(x_train)
+    print(y_train)
+    print("Valores de teste")
+    print(x_test)
+    print(y_test)
+
+    ##Modelos
+    ###Modelo de Regressão Linear
+    lin_reg = LinearRegression()
+    lin_reg.fit(x_train, y_train) #Uso da função custo para otimização do modelo
+
+    some_data = x_train.iloc[:5]
+    some_labels = y_train.iloc[:5]
+
+    print("Predições: ", lin_reg.predict(some_data))
+    print("Labels: ", some_labels.values)
+
+    ####Verificando o erro do modelo
+    preds = lin_reg.predict(x_train)
+
+    lin_mse = mean_squared_error(y_train, preds)
+    lin_rmse = np.sqrt(lin_mse)
+
+    #Underfitting - modelo não aprendeu o suficiente para prever com exatidão
+    print("Erro do modelo regressão linear: R$", lin_rmse,"/predição")
+
+    ##Modelo de regressão de árvore (Decision Tree Regressor)
+    tree_reg = DecisionTreeRegressor()
+    tree_reg.fit(x_train, y_train)
+
+    ####Verificando o erro do modelo
+    preds = tree_reg.predict(x_train)
+
+    lin_mse = mean_squared_error(y_train, preds)
+    lin_rmse = np.sqrt(lin_mse)
+
+    #Overfitting: modelo apresenta um baixo nível de erro, mas pode ser pq está performando demais
+    ## Isso implica que, no caso de dados que não estejam na faixa dos testados, o modelo irá se sair muito mal
+    print("Erro do modelo árvore: R$", lin_rmse, "/predição")
+
+    ##Cross validation - pega os dados e divide em k tamanhos, e realiza diversos treinamentos com os dados
+    ### Permite uma maior otimização do modelo de ml
+    scores = cross_val_score(tree_reg, x_train, y_train, scoring="neg_mean_squared_error", cv=10)
+    tree_rmse_scores = np.sqrt(-scores)
+
+    def display_scores(scores):
+        print("Scores: ", scores)
+        print("Mean: ", scores.mean())
+        print("Standard deviation: ", scores.std())
+
+    display_scores(tree_rmse_scores)
+
+    scores = cross_val_score(lin_reg, x_train, y_train, scoring="neg_mean_squared_error", cv=10)
+    lin_rmse_scores = np.sqrt(-scores)
+
+    display_scores(lin_rmse_scores)
+
+    ##Modelo Random Forest Regressor
+    rf_reg = RandomForestRegressor()
+    rf_reg.fit(x_train, y_train)
+
+    preds = rf_reg.predict(x_train)
+
+    rf_mse = mean_squared_error(y_train, preds)
+    rf_rmse = np.sqrt(rf_mse)
+    print("Erro random forest: ", rf_rmse)
+
+    scores = cross_val_score(rf_reg, x_train, y_train, scoring="neg_mean_squared_error", cv=10)
+    rf_rmse_scores = np.sqrt(-scores)
+
+    display_scores(rf_rmse_scores)
+
+    ## Avaliação e otimização do modelo
+
+
+
+
+
 
 
 an_exp_dados()
