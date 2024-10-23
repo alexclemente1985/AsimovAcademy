@@ -10,7 +10,7 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
 from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder
-from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.model_selection import GridSearchCV, train_test_split, cross_val_score
 from sklearn.tree import DecisionTreeRegressor
 
 
@@ -167,6 +167,30 @@ def an_exp_dados():
     display_scores(rf_rmse_scores)
 
     ## Avaliação e otimização do modelo
+    ### Teste de combinações diferentes de parâmetros e ficar com melhor combinação
+
+    param_grid = [
+        {'n_estimators': [3, 10, 30], 'max_features': [2, 4, 6, 8]},
+        {'bootstrap': [False], 'n_estimators': [3, 10], 'max_features': [2, 3, 4]},
+    ]
+
+    forest_reg = RandomForestRegressor()
+
+    grid_search = GridSearchCV(forest_reg, param_grid, cv=5, scoring='neg_mean_squared_error')
+
+    grid_search.fit(x_train, y_train)
+
+    print(grid_search.best_params_)
+
+    final_model = grid_search.best_estimator_
+    final_model_pred = final_model.predict(x_test)
+
+    final_mse = mean_squared_error(y_test,final_model_pred)
+    print(np.sqrt(final_mse))
+
+    fig = go.Figure(data=[go.Scatter(y=y_test.values), go.Scatter(y=final_model_pred)])
+    fig.show()
+
 
 
 
