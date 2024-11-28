@@ -7,16 +7,16 @@ import dash
 import sidebar
 
 app.layout = html.Div(children=[
-    dbc.Row([
-        dbc.Col([
-            dcc.Location(id="url"),
-            sidebar.layout
-        ], md=2),
-        dbc.Col([
-            html.Div(id="page-content")
-        ], md=8)
-    ])
-], style={"padding": "0px"})
+                dbc.Row([
+                    dbc.Col([
+                        dcc.Location(id="url"),
+                        sidebar.layout
+                    ], md=2, xs=2, sm=2, lg=2, xl=2, style={"width": "20vw"}),
+                    dbc.Col([
+                        html.Div(id="page-content")
+                    ], style={"width":"80vw"})
+                ],style={"display":"flex", "flex-direction":"row"})
+            ], style={"padding": "0px"})
 
 
 
@@ -24,10 +24,8 @@ app.layout = html.Div(children=[
 def render_page_content(pathname):
     print(pathname)
     if pathname == "/":
-        print("caindo na page1")
         return page1.layout
     else:
-        print("caindo na page2")
         return page2.layout
 
 
