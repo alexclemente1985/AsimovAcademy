@@ -8,6 +8,8 @@ from dash_bootstrap_templates import ThemeSwitchAIO
 from app import app
 from pathlib import Path
 from _components.row1 import *
+from _components.row2 import *
+from _components.row3 import *
 from assets.styles import *
 from dataset import *
 
@@ -19,7 +21,9 @@ def index():
 
     app.layout = dbc.Container(children=[
         #html.H1('Teste carai')
-        row1
+        row1,
+        row2,
+        row3
     ], fluid=True, style={'height':'100vh'})
 
     # ==== Callbacks ==== #
@@ -51,7 +55,7 @@ def index():
 
         return fig1, fig2, select
 
-    
+
     app.run_server(debug=True, port=8051)
 
 
