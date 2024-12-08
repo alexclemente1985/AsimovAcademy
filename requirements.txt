@@ -3,3 +3,4 @@ matplotlib
 seaborn
 pathlib
 PyQt6
+numpy
