@@ -1,7 +1,6 @@
 from pathlib import Path
 import pandas as pd
 
-print(Path.joinpath(Path.cwd(),'data', 'dataset_asimov.csv'))
 
 df = pd.read_csv(Path.joinpath(Path.cwd(),'data', 'dataset_asimov.csv'))
 df_crude = df.copy()
