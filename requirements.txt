@@ -4,3 +4,4 @@ seaborn
 pathlib
 PyQt6
 numpy
+scipy
