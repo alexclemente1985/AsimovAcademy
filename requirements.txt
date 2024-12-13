@@ -5,3 +5,4 @@ pathlib
 PyQt6
 numpy
 scipy
+statsmodels
