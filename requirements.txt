@@ -5,3 +5,6 @@ openpyxl
 plotly
 streamlit
 ipykernel
+dash_bootstrap_components
+dash_bootstrap_templates
+dash
