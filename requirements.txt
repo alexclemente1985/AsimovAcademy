@@ -3,4 +3,9 @@ plotly
 pandas
 dash_bootstrap_components
 dash_bootstrap_templates
+dash-core-components
+dash-html-components
+dash-table
 nbformat
+json5
+jsonschema
