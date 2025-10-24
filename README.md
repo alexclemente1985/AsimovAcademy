@@ -31,3 +31,15 @@
 
 ### Criando arquivo de requirements.txt a partir das libs já instaladas:
 `pip freeze > requirements.txt`
+
+
+### Criando projeto Django
+`django-admin startproject <nome_do_projeto>`
+
+### Criando app Django
+`python3 manage.py startapp <NOME_APP>`
+- Integrar o projeto em settings -> installed apps
+
+### Rodando o server Django
+- Iniciar o arquivo gerado pelo comando anterior
+`python3 manage.py runserver` ou `python manage.py runserver`
